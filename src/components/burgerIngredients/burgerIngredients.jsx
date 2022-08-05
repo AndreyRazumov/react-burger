@@ -1,67 +1,26 @@
-import React from 'react';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import burgerIngredients from './burgerIngredients.module.css'
+import TabElement from './tab/tab.jsx'
+import ListIngredients from './listIngredients/listIngredients'
 
-const TabElement = () => { 
-    const [current, setCurrent] = React.useState('one')
+const BurgerIngredients = (props) => {
+    const bun = props.data.filter(item => item.type === 'bun');
+    const sauce = props.data.filter(item => item.type === 'sauce');
+    const main = props.data.filter(item => item.type === 'main');
+    
     return (
-        <div style={{ display: 'flex' }}>
-        <Tab value="one" active={current === 'one'} onClick={setCurrent}>
-            One
-        </Tab>
-        <Tab value="two" active={current === 'two'} onClick={setCurrent}>
-            Two
-        </Tab>
-        <Tab value="three" active={current === 'three'} onClick={setCurrent}>
-            Three
-        </Tab>
-        </div>
+        <section className={burgerIngredients.burgerIngredients}>
+            <h1 className={`${burgerIngredients.headline} text text_type_main-large mt-10 mb-5`}>Соберите бургер</h1>            
+            <nav className={`${burgerIngredients.navigation} pt-4 pb-4`}>
+                <TabElement />
+            </nav>
+            <ul className={`${burgerIngredients.lists} mt-10 custom-scroll`}>
+                <ListIngredients name={"Булки"} data={bun} />
+                <ListIngredients name={"Соусы"} data={sauce} />
+                <ListIngredients name={"Начинки"} data={main} />
+            </ul>
+        </section>
     )
-    }
 
-export default class BurgerIngredients extends React.Component {
-    render() {
-        return (
-            <section className={burgerIngredients.section}>
-                <nav className={`${burgerIngredients.navigation} pt-4 pb-4`}>
-                    <TabElement />
-                </nav>
-                <ul>
-                    <li>
-                        
-                    </li>
-                </ul>
-
-
-
-
-                {/* <nav className={`${burgerIngredients.navigation} pt-4 pb-4`}>
-                <li className='pt-4 pr-5 pb-4 pl-5'>
-                    <a href='https://' className={`${burgerIngredients.linkActive} text text_type_main-default`}>
-                    <BurgerIcon type="primary" />
-                    <span className='ml-2'>Конструктор</span>
-                    </a>
-                </li>
-                <li className='pt-4 pr-5 pb-4 pl-5 ml-2'>
-                    <a href='https://' className={`${burgerIngredients.link} text text_type_main-default`}>
-                    <ListIcon type="secondary" />
-                    <span className='ml-2'>Лента Заказов</span>
-                    </a>
-                </li>
-                </nav>
-                <div className={burgerIngredients.logo}>
-                    <Logo />
-                </div>                
-                <nav className={burgerIngredients.navigation}>
-                    <li className='pt-4 pr-5 pb-4 pl-5'>
-                        <a href='https://' className={`${burgerIngredients.link} text text_type_main-default`}>
-                        <ProfileIcon type="secondary" />
-                        <span className='ml-2'>Личный кабинет</span>
-                        </a>
-                    </li>
-                </nav> */}
-            </section>
-        )
-    }
 }
 
+export default BurgerIngredients
