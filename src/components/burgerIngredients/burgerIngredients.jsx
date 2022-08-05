@@ -1,12 +1,41 @@
 import React from 'react';
-import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components'
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import burgerIngredients from './burgerIngredients.module.css'
+
+const TabElement = () => { 
+    const [current, setCurrent] = React.useState('one')
+    return (
+        <div style={{ display: 'flex' }}>
+        <Tab value="one" active={current === 'one'} onClick={setCurrent}>
+            One
+        </Tab>
+        <Tab value="two" active={current === 'two'} onClick={setCurrent}>
+            Two
+        </Tab>
+        <Tab value="three" active={current === 'three'} onClick={setCurrent}>
+            Three
+        </Tab>
+        </div>
+    )
+    }
 
 export default class BurgerIngredients extends React.Component {
     render() {
         return (
-            <header className={burgerIngredients.header}>
+            <section className={burgerIngredients.section}>
                 <nav className={`${burgerIngredients.navigation} pt-4 pb-4`}>
+                    <TabElement />
+                </nav>
+                <ul>
+                    <li>
+                        
+                    </li>
+                </ul>
+
+
+
+
+                {/* <nav className={`${burgerIngredients.navigation} pt-4 pb-4`}>
                 <li className='pt-4 pr-5 pb-4 pl-5'>
                     <a href='https://' className={`${burgerIngredients.linkActive} text text_type_main-default`}>
                     <BurgerIcon type="primary" />
@@ -30,8 +59,8 @@ export default class BurgerIngredients extends React.Component {
                         <span className='ml-2'>Личный кабинет</span>
                         </a>
                     </li>
-                </nav>
-            </header>
+                </nav> */}
+            </section>
         )
     }
 }
