@@ -1,11 +1,12 @@
+import React from 'react';
 import ingredientStyle from './ingredient.module.css'
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
 
-const Ingredient = ({ src, name, price }) => {
+const Ingredient = ({ id, image, name, price }) => {
     return (
-        <li className={`${ingredientStyle.itemIngredients} mt-6 mb-8`}>
-            <img src={src} alt="ingridienImage" className={`mb-1`} />
+        <li key={id} className={`${ingredientStyle.itemIngredients} mt-6 mb-8`}>
+            <img src={image} alt="ingridienImage" className={`mb-1`} />
             <p className={`${ingredientStyle.itemIngredients} mr-2 text text_type_digits-default`}>{price}</p>
             <CurrencyIcon type="primary" />
             <p className={`${ingredientStyle.name} text text_type_main-default`}>{name}</p>
