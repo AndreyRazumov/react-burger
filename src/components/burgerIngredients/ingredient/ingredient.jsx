@@ -4,14 +4,14 @@ import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-c
 
 const Ingredient = ({ src, name, price }) => {
     return (
-        <li className={`${ingredientStyle.itemIngredients} mt-6 mb-8`}>
-            <img src={src} alt="ingridienImage" className={`mb-1`} />
-            <p className={`${ingredientStyle.itemIngredients} mr-2 text text_type_digits-default`}>{price}</p>
-            <CurrencyIcon type="primary" />
-            <p className={`${ingredientStyle.name} text text_type_main-default`}>{name}</p>
-            <div>
-                <Counter count={1} size="default" />
+        <li className={`${ingredientStyle.ingredient} pl-4 mr-2 pb-8`}>            
+            <Counter count={1} size="default" />
+            <img src={src} alt="ingridienImage" className={`ml-4 mr-4`} />
+            <div className={`${ingredientStyle.price} mt-2 mb-2`}>
+                <p className={`mr-2 text text_type_digits-default`}>{price}</p>
+                <CurrencyIcon type="primary" />
             </div>
+            <p className={`${ingredientStyle.name} text text_type_main-default`}>{name}</p>
         </li>
     )
 }

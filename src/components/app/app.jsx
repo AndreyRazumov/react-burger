@@ -10,8 +10,10 @@ function App() {
 
     <div className={`${appStyles.app} pt-15 pb-10`}>
       <AppHeader />
-      <BurgerIngredients  data={data}/>
-      {/* <BurgerConstructor  data={data}/> */}
+      <div className={`${appStyles.twoClumns} pr-5 pl-5 pt-10`}>
+        <BurgerIngredients data={data}/>
+        <BurgerConstructor/> 
+      </div>
     </div>
   );
 }
