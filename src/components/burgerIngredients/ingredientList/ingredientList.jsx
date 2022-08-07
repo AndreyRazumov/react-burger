@@ -4,7 +4,7 @@ import Ingredient from '../ingredient/ingredient'
 
 const ListIngredients = ({ data, name }) => {
     return (        
-        <li id="" className={`${ingredientList.blocks}`}>
+        <li className={`${ingredientList.blocks}`}>
         <h2 className={`${ingredientList.designation} text text_type_main-medium`}>{name}</h2>
             {/* <div className={`${ingredientList.items}`}> */}
                 <ul className={`${ingredientList.lists} mt-6 mb-8`}>
