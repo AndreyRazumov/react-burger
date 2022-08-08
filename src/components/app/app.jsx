@@ -12,7 +12,7 @@ function App() {
       <AppHeader />
       <div className={`${appStyles.twoClumns} pr-5 pl-5 pt-10`}>
         <BurgerIngredients data={data}/>
-        <BurgerConstructor/> 
+        <BurgerConstructor ingredients={data}/> 
       </div>
     </div>
   );

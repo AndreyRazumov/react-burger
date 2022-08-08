@@ -1,6 +1,8 @@
 import React from 'react';
-import burgerIngredients from './burgerIngredients.module.css'
-import TabElement from './tab/tab.jsx'
+import PropTypes from 'prop-types';
+import { ingridientDataTypes } from '../../utils/const';
+import burgerIngredientsStyle from './burgerIngredients.module.css'
+import TabElement from './tabElement/tabElement.jsx'
 import ListIngredients from './ingredientList/ingredientList'
 
 const BurgerIngredients = (props) => {
@@ -9,12 +11,12 @@ const BurgerIngredients = (props) => {
     const main = props.data.filter(item => item.type === 'main');
 
     return (
-        <section className={`${burgerIngredients.section}`}>
-            <h1 className={`${burgerIngredients.headline} text text_type_main-large pb-5`}>Соберите бургер</h1>            
-            <nav className={`${burgerIngredients.navigation}`}>
+        <section className={`${burgerIngredientsStyle.section}`}>
+            <h1 className={`text text_type_main-large pb-5`}>Соберите бургер</h1>            
+            <nav>
                 <TabElement />
             </nav>
-            <ul className={`${burgerIngredients.lists} mt-10 custom-scroll`}>
+            <ul className={`${burgerIngredientsStyle.lists} mt-10`}>
                 <ListIngredients name={"Булки"} data={bun} />
                 <ListIngredients name={"Соусы"} data={sauce} />
                 <ListIngredients name={"Начинки"} data={main} />
@@ -23,5 +25,9 @@ const BurgerIngredients = (props) => {
     )
 
 }
+
+BurgerIngredients.propTypes = {
+    data: PropTypes.arrayOf(ingridientDataTypes).isRequired,
+};
 
 export default BurgerIngredients

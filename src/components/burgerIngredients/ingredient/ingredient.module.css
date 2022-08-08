@@ -1,10 +1,9 @@
-.ingredient {
+.list {
     position: relative;
     display: flex;
     align-items: center;
     flex-direction: column;
     max-width: 272px;
-    list-style: none;
 }
 
 .price {
