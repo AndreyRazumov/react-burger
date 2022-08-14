@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ingridientDataTypes } from '../../../utils/const';
+import { ingridientDataTypes } from '../../../utils/types';
 import { ConstructorElement, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import constructorElementsStyle from './constructorElements.module.css'
 

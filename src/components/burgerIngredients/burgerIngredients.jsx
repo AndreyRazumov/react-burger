@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ingridientDataTypes } from '../../utils/const';
+import { ingridientDataTypes } from '../../utils/types';
 import burgerIngredientsStyle from './burgerIngredients.module.css'
 import TabElement from './tabElement/tabElement.jsx'
 import ListIngredients from './ingredientList/ingredientList'
 
-const BurgerIngredients = (props) => {
+const BurgerIngredients = (props, clickElements) => {
     const bun = props.data.filter(item => item.type === 'bun');
     const sauce = props.data.filter(item => item.type === 'sauce');
     const main = props.data.filter(item => item.type === 'main');
@@ -17,9 +17,9 @@ const BurgerIngredients = (props) => {
                 <TabElement />
             </nav>
             <ul className={`${burgerIngredientsStyle.lists} mt-10`}>
-                <ListIngredients name={"Булки"} data={bun} />
-                <ListIngredients name={"Соусы"} data={sauce} />
-                <ListIngredients name={"Начинки"} data={main} />
+                <ListIngredients name={"Булки"} data={bun} clickElements={clickElements} />
+                <ListIngredients name={"Соусы"} data={sauce} clickElements={clickElements} />
+                <ListIngredients name={"Начинки"} data={main} clickElements={clickElements} />
             </ul>
         </section>
     )

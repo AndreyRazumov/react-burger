@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ingridientDataTypes } from '../../../utils/const';
+import { ingridientDataTypes } from '../../../utils/types';
 import ingredientStyle from './ingredient.module.css'
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
 
-const Ingredient = ({ item, count }) => {
+const Ingredient = ({ item, count, clickElements }) => {
     const { image, name, price } = item;
     return (
-        <li className={`${ingredientStyle.list} ml-4 mr-2 mb-8`}>
+        <li onClick={() => clickElements(item)} className={`${ingredientStyle.list} ml-4 mr-2 mb-8`}>
             {0 < count &&
                 <Counter count={count} size="default" />
             }
