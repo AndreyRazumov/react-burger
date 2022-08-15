@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import modalStyles from './modal.module.css';
 import ModalOverlay from './modalOverlay/modalOverlay'
 
-export default function Modal({ children, title, closeModal }) {
+const Modal = ({ children, title, closeModal }) => {
   const modalRoot = document.getElementById('modals');
 
   useEffect(() => {
@@ -21,26 +21,20 @@ export default function Modal({ children, title, closeModal }) {
     }
   };
   
-  // const onModalClick = (evt) => {
-  //   evt.stopPropagation();
-  // }
+  const onModalClick = (evt) => {
+    evt.stopPropagation();
+  }
 
   return createPortal(
-    <>
-      <section>
-        <ModalOverlay onModalClick={closeModal}>
-          <div className={modalStyles.container}>
-            <div className={`${modalStyles.text} pt-10 pr-10 pl-10`}>
-              <h1 className="text text_type_main-large">{title}</h1>
+        <ModalOverlay modalClick={closeModal}>
+          <div className={`${modalStyles.container} p-10`} onClick={onModalClick}>
+            <h1 className={`${modalStyles.text} text text_type_main-large mt-4`} onClick={onModalClick}>{title}</h1>
               <button className={modalStyles.button} onClick={closeModal}>
                 <CloseIcon type="primary" />
               </button>
-            </div>
             {children}
           </div>
-        </ModalOverlay>
-      </section>
-    </>,
+        </ModalOverlay>,
     modalRoot
   );
 }
@@ -50,3 +44,5 @@ Modal.propTypes = {
   title: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
 };
+
+export default Modal

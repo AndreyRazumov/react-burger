@@ -1,6 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { ingridientDataTypes } from '../../../utils/types';
+import { ingredientDataTypes } from '../../../utils/types';
 import { ConstructorElement, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import constructorElementsStyle from './constructorElements.module.css'
 
@@ -19,8 +18,10 @@ const ConstructorElements = ({ ingredients }) => {
             </div>
             }
             <ul className={`${constructorElementsStyle.items}`} key="middle">
-                {ingredients.slice(1).map(ingredient => (
-                    <li className={`${constructorElementsStyle.list} mr-2 mb-4`} key={ingredient._id}>
+                {ingredients.slice(1).map((ingredient) => {
+                    if (ingredient.type !== "bun") {
+                    return (
+                        <li className={`${constructorElementsStyle.list} mr-2 mb-4`} key={ingredient._id}>
                         <DragIcon type="primary" />
                         <ConstructorElement
                             text={ingredient.name}
@@ -28,7 +29,7 @@ const ConstructorElements = ({ ingredients }) => {
                             thumbnail={ingredient.image_mobile}
                         />
                     </li>
-                ))}
+                )}})}
             </ul>
             {0 < ingredients.length &&
             <div className={`ml-8 mt-2`} key="bottom">
@@ -46,7 +47,7 @@ const ConstructorElements = ({ ingredients }) => {
 }
 
 ConstructorElements.propTypes = {
-    ingredients: PropTypes.arrayOf(ingridientDataTypes).isRequired,
+    ingredients: PropTypes.arrayOf(ingredientDataTypes).isRequired,
 };
 
 export default ConstructorElements
