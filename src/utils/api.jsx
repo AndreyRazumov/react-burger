@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-import { ingredientDataTypes } from './types';
 const API_URL = `https://norma.nomoreparties.space/api/ingredients`
 
 const fetchData = (url) => {
@@ -20,9 +18,6 @@ setApiData({ ...apiData, hasError: false, isLoading: true });
       setApiData({ isLoading: false, hasError: true, errorMessage: err.message })
     });
   }
-  getIngredients.propTypes = {
-    apiData: PropTypes.arrayOf(ingredientDataTypes).isRequired,
-    setApiData: PropTypes.func.isRequired
-  };
+  
 
 export default getIngredients
