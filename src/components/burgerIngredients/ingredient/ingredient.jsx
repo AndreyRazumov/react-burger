@@ -1,14 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { ingridientDataTypes } from '../../../utils/const';
-import ingredientStyle from './ingredient.module.css'
+import { ingredientDataTypes } from '../../../utils/types';
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import ingredientStyle from './ingredient.module.css'
 
 
-const Ingredient = ({ item, count }) => {
+const Ingredient =  ({ item, count, openDetailsModal }) => {
     const { image, name, price } = item;
     return (
-        <li className={`${ingredientStyle.list} ml-4 mr-2 mb-8`}>
+        <li onClick={openDetailsModal} className={`${ingredientStyle.list} ml-4 mr-2 mb-8`}>
             {0 < count &&
                 <Counter count={count} size="default" />
             }
@@ -23,8 +22,9 @@ const Ingredient = ({ item, count }) => {
 }
 
 Ingredient.propTypes = {
-    item: ingridientDataTypes.isRequired,
+    item: ingredientDataTypes.isRequired,
     count: PropTypes.number.isRequired,
+    openDetailsModal: PropTypes.func.isRequired,
 };
 
 export default Ingredient
