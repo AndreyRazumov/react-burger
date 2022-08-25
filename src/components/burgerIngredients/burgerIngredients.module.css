@@ -1,0 +1,24 @@
+.section {
+  width: 600px;
+  height: calc(100vh - 130px);
+}
+
+.lists {    
+  list-style: none;
+  padding: 0;
+  overflow-y: auto;
+  height: calc(100vh - 290px);
+}
+
+.lists::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lists::-webkit-scrollbar-thumb {
+  background-color: #8585ad;
+}
+
+.lists::-webkit-scrollbar-track {
+  background-color: #2f2f37;
+}
+

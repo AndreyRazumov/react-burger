@@ -1,0 +1,30 @@
+.header {
+    background-color: #1c1c21;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.navigation {
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    max-width: 383px;
+    width: 100%;
+}
+
+.link {  
+    display: flex;
+    color: #8585ad;
+    text-decoration: none;
+}
+
+.linkActive {
+    composes: link;
+    color: #f2f2f3;
+  }
