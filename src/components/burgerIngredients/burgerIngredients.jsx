@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
-import { ingredientDataTypes } from '../../utils/types';
+import React from 'react';
 import burgerIngredientsStyle from './burgerIngredients.module.css'
 import TabElement from './tabElement/tabElement.jsx'
 import ListIngredients from './ingredientList/ingredientList'
+import { IngredientsContext } from '../../utils/ingredientsContext'; 
 
-const BurgerIngredients = ({data, openDetailsModal}) => {
-    const bun = data.filter((item) => item.type === 'bun');
-    const sauce = data.filter((item) => item.type === 'sauce');
-    const main = data.filter((item) => item.type === 'main');
+const BurgerIngredients = () => {
+    const ingredients = React.useContext(IngredientsContext);
+    const bun = ingredients.filter((item) => item.type === 'bun');
+    const sauce = ingredients.filter((item) => item.type === 'sauce');
+    const main = ingredients.filter((item) => item.type === 'main');
 
     return (
         <section className={`${burgerIngredientsStyle.section}`}>
@@ -16,17 +17,14 @@ const BurgerIngredients = ({data, openDetailsModal}) => {
                 <TabElement />
             </nav>
             <ul className={`${burgerIngredientsStyle.lists} mt-10`}>
-                <ListIngredients name={"Булки"} data={bun} openDetailsModal={openDetailsModal} />
-                <ListIngredients name={"Соусы"} data={sauce} openDetailsModal={openDetailsModal} />
-                <ListIngredients name={"Начинки"} data={main} openDetailsModal={openDetailsModal} />
+                <ListIngredients name={"Булки"} data={bun} />
+                <ListIngredients name={"Соусы"} data={sauce} />
+                <ListIngredients name={"Начинки"} data={main} />
             </ul>
         </section>
     );
 
 }
 
-BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(ingredientDataTypes).isRequired,
-    openDetailsModal: PropTypes.func.isRequired
-};
+
 export default BurgerIngredients

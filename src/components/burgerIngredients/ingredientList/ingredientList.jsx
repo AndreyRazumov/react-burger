@@ -4,7 +4,7 @@ import ingredientList from './ingredientList.module.css'
 import Ingredient from '../ingredient/ingredient'
 
 
-const ListIngredients = ({ data, name, openDetailsModal }) => {
+const ListIngredients = ({ data, name }) => {
     return (
         <li>
         <h2 className={`text text_type_main-medium`}>{name}</h2>
@@ -14,7 +14,6 @@ const ListIngredients = ({ data, name, openDetailsModal }) => {
                     item={item} 
                     key={item._id}
                     count={item.__v}
-                    openDetailsModal={() => openDetailsModal(item)}
                     />
                 ))}
             </ul>
@@ -24,8 +23,7 @@ const ListIngredients = ({ data, name, openDetailsModal }) => {
 
 ListIngredients.propTypes = {
     data: PropTypes.arrayOf(ingredientDataTypes).isRequired,
-    name: PropTypes.string.isRequired,
-    openDetailsModal: PropTypes.func.isRequired
+    name: PropTypes.string.isRequired
 };
 
 export default ListIngredients

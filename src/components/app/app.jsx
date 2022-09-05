@@ -3,10 +3,12 @@ import appStyles from './app.module.css';
 import AppHeader from '../appHeader/appHeader'
 import BurgerIngredients from '../burgerIngredients/burgerIngredients'
 import BurgerConstructor from '../burgerConstructor/burgerConstructor'
-import getIngredients from '../../utils/api'
+import {getIngredients, sendOrder} from '../../utils/api'
 import Modal from '../modal/modal'
 import OrderDetails from '../modal/orderDetails/orderDetails'
 import IngredientDetails from '../modal/ingredientDetails/ingredientDetails';
+import { IngredientsContext } from '../../utils/ingredientsContext';
+import { OpenDetailsModalContext } from '../../utils/openDetailsModalContext';
 
 function App() {
   const [apiData, setApiData] = useState({
@@ -15,10 +17,23 @@ function App() {
     errorMessage: '',
     data: []
   });
-
   useEffect(() => {
     getIngredients(apiData, setApiData);
   }, []);
+  const ingredients = apiData.data;
+
+
+  const [orderNumber, setOrderNumber] = useState(0);
+
+  const placeOrder = (orderData) => {
+    sendOrder(orderData)
+      .then((data) => {
+        openOrderModal();
+        setOrderNumber(data);
+      })
+      .catch(err => console.log(err));
+  };
+
 
   const [currentItem, setCurrentItem] = useState(null);
   const openDetailsModal = (elem) => {
@@ -61,18 +76,22 @@ function App() {
         !apiData.isLoading &&
         !apiData.hasError &&
       <div className={`${appStyles.twoClumns} pr-5 pl-5 pt-10`}>
-        <BurgerIngredients data={apiData.data} openDetailsModal={openDetailsModal} />
-        <BurgerConstructor ingredients={apiData.data} openOrderModal={openOrderModal}/> 
+        <IngredientsContext.Provider value={ingredients}>
+          <OpenDetailsModalContext.Provider value={openDetailsModal}>
+            <BurgerIngredients />
+          </OpenDetailsModalContext.Provider>
+          <BurgerConstructor openOrderModal={placeOrder}/>
+        </IngredientsContext.Provider>
       </div>
       }
         {isOrderDetails  && (
         <Modal closeModal={closeModals} title="">
-          <OrderDetails />
+          <OrderDetails orderNumber={orderNumber}/>
         </Modal>
       )}
       {currentItem && (
         <Modal closeModal={closeModals} title="Детали ингредиента">
-          <IngredientDetails ingredient={currentItem}/>
+          <IngredientDetails currentItem={currentItem}/>
         </Modal>
       )}
     </div>
