@@ -1,24 +1,9 @@
-.items {
-    overflow-y: auto;
-    height: calc(100vh - 476px);
-    padding: 0;
-    list-style: none;
-}
-
-.items::-webkit-scrollbar {
-    width: 8px;
-}
-
-.items::-webkit-scrollbar-thumb {
-    background-color: #8585ad;
-}
-
-.items::-webkit-scrollbar-track {
-    background-color: #2f2f37;
-}
-
 .list {
     display: flex;
     align-items: center;
     column-gap: 10px;
+}
+
+.isDragging {
+    opacity: 0.5;
 }

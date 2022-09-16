@@ -1,97 +1,126 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import update from 'immutability-helper';
 import appStyles from './app.module.css';
 import AppHeader from '../appHeader/appHeader'
 import BurgerIngredients from '../burgerIngredients/burgerIngredients'
 import BurgerConstructor from '../burgerConstructor/burgerConstructor'
-import {getIngredients, sendOrder} from '../../utils/api'
 import Modal from '../modal/modal'
 import OrderDetails from '../modal/orderDetails/orderDetails'
 import IngredientDetails from '../modal/ingredientDetails/ingredientDetails';
-import { IngredientsContext } from '../../utils/ingredientsContext';
-import { OpenDetailsModalContext } from '../../utils/openDetailsModalContext';
+import {
+  ADD_INGREDIENT,
+  DELETE_INGREDIENT,
+  ADD_INGREDIENT_DATA,
+  DELETE_INGREDIENT_DATA,
+  MOVE_CONSTRUCTOR_ELEMENT,
+  OPEN_INGREDIENT_DETAILS,
+  CLOSE_INGREDIENT_DETAILS,
+  OPEN_ORDER_DETAILS,
+  CLOSE_ORDER_DETAILS,
+  POST_ORDER_FAILED,
+  getIngredients,
+  getOrder,
+} from '../../services/actions/actions';
 
 function App() {
-  const [apiData, setApiData] = useState({
-    isLoading: false,
-    hasError: false,
-    errorMessage: '',
-    data: []
-  });
-  useEffect(() => {
-    getIngredients(apiData, setApiData);
-  }, []);
-  const ingredients = apiData.data;
+  const dispatch = useDispatch();
+
+  const currentBurger = useSelector((store) => store.currentBurgerReducer.currentBurger);
+  const isIngredientDetailsOpened = useSelector((store) => store.modalReducer.isIngredientDetailsOpened);
+  const isOrderDetailsOpened = useSelector((store) => store.modalReducer.isOrderDetailsOpened);
 
 
-  const [orderNumber, setOrderNumber] = useState(0);
+  const currentBurgerIngredients = [...currentBurger].filter((item) => item.type !== 'bun');
 
-  const placeOrder = (orderData) => {
-    sendOrder(orderData)
-      .then((data) => {
-        openOrderModal();
-        setOrderNumber(data);
-      })
-      .catch(err => console.log(err));
+  const openOrderDetails = () => {
+    dispatch({ type: OPEN_ORDER_DETAILS });
   };
+ 
 
-
-  const [currentItem, setCurrentItem] = useState(null);
-  const openDetailsModal = (elem) => {
-    if (elem) {
-      setCurrentItem(elem);
-    }
-  };
-
-  const [isOrderDetails, setIsOrderDetails] = useState(false);
+  const openDetailsModal = (item) => {
+    dispatch({ type: ADD_INGREDIENT_DATA, item });
+    dispatch({ type: OPEN_INGREDIENT_DETAILS });
+  }
 
   const closeModals = () => {
-    setIsOrderDetails(false);
-    setCurrentItem(null);
+    dispatch({ type: DELETE_INGREDIENT_DATA });
+    dispatch({ type: CLOSE_INGREDIENT_DETAILS });
+    dispatch({ type: POST_ORDER_FAILED });
+    dispatch({ type: CLOSE_ORDER_DETAILS });
   };
 
-  const openOrderModal = () => {
-    setIsOrderDetails(true);
+  useEffect(() => {
+    dispatch(getIngredients());
+  }, [dispatch]);
+
+  const openOrderModal = (orderData) => {
+    dispatch(getOrder(orderData));
+    openOrderDetails();
+
+  };
+
+  const handleDrop = (item) => {
+    if (item.type === 'bun') {
+      const bun = currentBurger.find((element) => element.type === 'bun');
+      const index = currentBurger.indexOf(bun);
+      if (index !== -1) {
+        dispatch({ type: DELETE_INGREDIENT, index });
+      }
+    }
+    dispatch({ type: ADD_INGREDIENT, item });
+  };
+
+  const handleMove = useCallback((dragIndex, hoverIndex) => {
+    const bun = [...currentBurger].find((item) => item.type === 'bun');
+    const dragElement = currentBurgerIngredients[dragIndex];
+    const payload = bun
+      ? [bun, ...update(currentBurgerIngredients, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragElement],
+        ],
+      })]
+      : update(currentBurgerIngredients, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragElement],
+        ],
+      });
+    dispatch({ type: MOVE_CONSTRUCTOR_ELEMENT, payload });
+  }, [currentBurgerIngredients]);
+
+  const handleDeleteIngredient = (item) => {
+    const index = currentBurger.indexOf(item);
+    dispatch({ type: DELETE_INGREDIENT, index });
   };
 
   return (
     <div className={`${appStyles.app} pt-15 pb-10`}>
       <AppHeader />
-
-      {
-        apiData.isLoading && 
-        <Modal closeModal={closeModals} title="">
-          <p className={`text text_type_main-large p-10`}>Загружаем ингредиенты...</p>
-        </Modal>
-      }
-      {
-        apiData.hasError &&
-        <Modal closeModal={closeModals} title="">
-          <p className={`text text_type_main-large p-10`}>
-            Что-то пошло не так... Ошибка: {apiData.errorMessage}
-          </p>
-        </Modal>
-      }
-
-      {
-        !apiData.isLoading &&
-        !apiData.hasError &&
       <div className={`${appStyles.twoClumns} pr-5 pl-5 pt-10`}>
-        <IngredientsContext.Provider value={ingredients}>
-          <OpenDetailsModalContext.Provider value={openDetailsModal}>
-            <BurgerIngredients />
-          </OpenDetailsModalContext.Provider>
-          <BurgerConstructor openOrderModal={placeOrder}/>
-        </IngredientsContext.Provider>
+        <DndProvider backend={HTML5Backend}>
+          <BurgerIngredients
+            openDetailsModal={openDetailsModal}
+             />
+          <BurgerConstructor 
+            openOrderModal={ openOrderModal } 
+            onDrop={handleDrop} 
+            onMove={ handleMove } 
+            onDelete={ handleDeleteIngredient }
+            />
+        </DndProvider>
       </div>
-      }
-        {isOrderDetails  && (
+        {isOrderDetailsOpened  && (
         <Modal closeModal={closeModals} title="">
-          <OrderDetails orderNumber={orderNumber}/>
+          <OrderDetails />
         </Modal>
       )}
-      {currentItem && (
+      {isIngredientDetailsOpened  && (
         <Modal closeModal={closeModals} title="Детали ингредиента">
-          <IngredientDetails currentItem={currentItem}/>
+          <IngredientDetails  />
         </Modal>
       )}
     </div>
