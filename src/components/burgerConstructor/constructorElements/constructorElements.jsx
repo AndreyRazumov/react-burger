@@ -1,9 +1,12 @@
-import PropTypes from 'prop-types';
-import { ingredientDataTypes } from '../../../utils/types';
+import React from 'react';
 import { ConstructorElement, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import constructorElementsStyle from './constructorElements.module.css'
+import { IngredientsContext } from '../../../utils/ingredientsContext'; 
 
-const ConstructorElements = ({ ingredients }) => {
+const ConstructorElements = () => {
+    const ingredients = React.useContext(IngredientsContext);
+    const selectedBun = ingredients.find((item) => item.type === 'bun');
+
     return (
         <div>
             {0 < ingredients.length &&
@@ -11,14 +14,14 @@ const ConstructorElements = ({ ingredients }) => {
                 <ConstructorElement
                     type="top"
                     isLocked
-                    text={`${ingredients[0].name} (верх)`}
-                    price={ingredients[0].price}
-                    thumbnail={ingredients[0].image_mobile}
+                    text={`${selectedBun.name} (верх)`}
+                    price={selectedBun.price}
+                    thumbnail={selectedBun.image_mobile}
                 />
             </div>
             }
             <ul className={`${constructorElementsStyle.items}`} key="middle">
-                {ingredients.slice(1).map((ingredient) => {
+                {ingredients.map((ingredient) => {
                     if (ingredient.type !== "bun") {
                     return (
                         <li className={`${constructorElementsStyle.list} mr-2 mb-4`} key={ingredient._id}>
@@ -29,25 +32,23 @@ const ConstructorElements = ({ ingredients }) => {
                             thumbnail={ingredient.image_mobile}
                         />
                     </li>
-                )}})}
+                    )}}
+                )}
             </ul>
             {0 < ingredients.length &&
             <div className={`ml-8 mt-2`} key="bottom">
                 <ConstructorElement
                     type="bottom"
                     isLocked
-                    text={`${ingredients[0].name} (низ)`}
-                    price={ingredients[0].price}
-                    thumbnail={ingredients[0].image_mobile}
+                    text={`${selectedBun.name} (низ)`}
+                    price={selectedBun.price}
+                    thumbnail={selectedBun.image_mobile}
                 />
             </div>
             }
         </div>
     )
-}
-
-ConstructorElements.propTypes = {
-    ingredients: PropTypes.arrayOf(ingredientDataTypes).isRequired,
 };
+
 
 export default ConstructorElements
