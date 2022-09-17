@@ -7,7 +7,7 @@
   list-style: none;
   padding: 0;
   overflow-y: auto;
-  height: calc(100vh - 290px);
+  height: 665px;
 }
 
 .lists::-webkit-scrollbar {

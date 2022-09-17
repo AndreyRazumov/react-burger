@@ -11,32 +11,32 @@ const Modal = ({ children, title, closeModal }) => {
 
   useEffect(() => {
     const handleEscClose = (evt) => {
-    if (evt.key === "Escape") {
-      closeModal();
-    }
-  };
+      if (evt.key === "Escape") {
+        closeModal();
+      }
+    };
     document.addEventListener("keydown", handleEscClose);
     return () => {
       document.removeEventListener("keydown", handleEscClose);
     };
   }, []);
-  
-  
-  
+
+
+
   const stopClickPropagation = (evt) => {
     evt.stopPropagation();
   }
 
   return createPortal(
-        <ModalOverlay modalClick={closeModal}>
-          <div className={`${modalStyles.container} p-10`} onClick={stopClickPropagation}>
-            <h1 className={`${modalStyles.text} text text_type_main-large mt-4`} onClick={stopClickPropagation}>{title}</h1>
-              <button className={modalStyles.button} onClick={closeModal}>
-                <CloseIcon type="primary" />
-              </button>
-            {children}
-          </div>
-        </ModalOverlay>,
+    <ModalOverlay modalClick={closeModal}>
+      <div className={`${modalStyles.container} p-10`} onClick={stopClickPropagation}>
+        <h1 className={`${modalStyles.text} text text_type_main-large mt-4`} onClick={stopClickPropagation}>{title}</h1>
+        <button className={modalStyles.button} onClick={closeModal}>
+          <CloseIcon type="primary" />
+        </button>
+        {children}
+      </div>
+    </ModalOverlay>,
     modalRoot
   );
 }
