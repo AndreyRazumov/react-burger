@@ -16,20 +16,21 @@ import {
   CLOSE_INGREDIENT_DETAILS,
   OPEN_ORDER_DETAILS,
   CLOSE_ORDER_DETAILS,
-  POST_ORDER_FAILED,
   getIngredients,
   getOrder,
 } from '../../services/actions/actions';
 
 function App() {
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   const isIngredientDetailsOpened = useSelector((store) => store.modalReducer.isIngredientDetailsOpened);
   const isOrderDetailsOpened = useSelector((store) => store.modalReducer.isOrderDetailsOpened);
+  const { ingredientsReducer, orderReducer } = useSelector((store) => store);
+  
 
   const openOrderDetails = () => {
     dispatch({ type: OPEN_ORDER_DETAILS });
   };
- 
+
   const openDetailsModal = (item) => {
     dispatch({ type: ADD_INGREDIENT_DATA, item });
     dispatch({ type: OPEN_INGREDIENT_DETAILS });
@@ -38,7 +39,6 @@ function App() {
   const closeModals = () => {
     dispatch({ type: DELETE_INGREDIENT_DATA });
     dispatch({ type: CLOSE_INGREDIENT_DETAILS });
-    dispatch({ type: POST_ORDER_FAILED });
     dispatch({ type: CLOSE_ORDER_DETAILS });
   };
 
@@ -51,6 +51,25 @@ function App() {
     openOrderDetails();
   };
 
+
+  if (ingredientsReducer.ingredientsRequest || orderReducer.orderRequest) {
+    return (
+      <Modal closeModal={closeModals} title="">
+        <p className={`text text_type_main-large p-10`}>Загрузка...</p>
+      </Modal>
+    )
+  }
+
+  if (ingredientsReducer.ingredientsFaied || orderReducer.orderFaied) {
+    return (
+      <Modal closeModal={closeModals} title="">
+        <p className={`text text_type_main-large p-10`}>
+          Что-то пошло не так... Перезагрузите страницу!
+        </p>
+      </Modal>
+    )
+  }
+
   return (
     <div className={`${appStyles.app} pt-15 pb-10`}>
       <AppHeader />
@@ -58,20 +77,20 @@ function App() {
         <DndProvider backend={HTML5Backend}>
           <BurgerIngredients
             openDetailsModal={openDetailsModal}
-             />
-          <BurgerConstructor 
+          />
+          <BurgerConstructor
             openOrderModal={openOrderModal}
-            />
+          />
         </DndProvider>
       </div>
-        {isOrderDetailsOpened  && (
+      {isOrderDetailsOpened && (
         <Modal closeModal={closeModals} title="">
           <OrderDetails />
         </Modal>
       )}
-      {isIngredientDetailsOpened  && (
+      {isIngredientDetailsOpened && (
         <Modal closeModal={closeModals} title="Детали ингредиента">
-          <IngredientDetails  />
+          <IngredientDetails />
         </Modal>
       )}
     </div>
