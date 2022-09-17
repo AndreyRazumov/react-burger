@@ -5,14 +5,14 @@ import { ingredientDataTypes } from '../../../utils/types'
 import { ConstructorElement, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import constructorElementsStyle from './constructorElements.module.css'
 
-const ConstructorElements = memo(({ element, id, index, onDelete, onMove }) => {
+const ConstructorElements = memo(({ element, index, onDelete, onMove }) => {
     const { name, price, image } = element;
 
     const ref = useRef(null);
 
     const [{ isDragging }, dragRef] = useDrag({
         type: 'constructorElement',
-        item: { id, index },
+        item: { index },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -48,10 +48,7 @@ const ConstructorElements = memo(({ element, id, index, onDelete, onMove }) => {
             item.index = hoverIndex;
         },
     });
-
     dragRef(dropRef(ref));
-
-
 
     return (
         <li
@@ -74,7 +71,6 @@ const ConstructorElements = memo(({ element, id, index, onDelete, onMove }) => {
 
 ConstructorElements.propTypes = {
     element: PropTypes.oneOfType([PropTypes.object, ingredientDataTypes]).isRequired,
-    id: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
     onDelete: PropTypes.func.isRequired,
     onMove: PropTypes.func.isRequired,

@@ -1,12 +1,20 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useMemo, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useDrop } from 'react-dnd';
 import PropTypes from 'prop-types';
+import update from 'immutability-helper';
+import { v4 as uuidv4 } from 'uuid';
 import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import ConstructorElements from './constructorElements/constructorElements'
 import burgerConstructorStyles from './burgerConstructor.module.css';
+import {
+    ADD_INGREDIENT,
+    MOVE_CONSTRUCTOR_ELEMENT,
+    DELETE_INGREDIENT
+} from '../../services/actions/actions';
 
-const BurgerConstructor = ({ openOrderModal, onDrop, onMove, onDelete }) => {
+const BurgerConstructor = ({ openOrderModal }) => {
+    const dispatch = useDispatch();
     const currentBurger = useSelector((store) => store.currentBurgerReducer.currentBurger);
     const orderRequest = useSelector((store) => store.orderReducer.orderRequest);
     const selectedBun = currentBurger && currentBurger.find((item) => item.type === 'bun');
@@ -18,14 +26,54 @@ const BurgerConstructor = ({ openOrderModal, onDrop, onMove, onDelete }) => {
         );
     }, [currentBurger]);
 
+    const handleDrop = (item) => {
+        if (item.type === 'bun') {
+            const bun = currentBurger.find((element) => element.type === 'bun');
+            const index = currentBurger.indexOf(bun);
+            if (index !== -1) {
+                dispatch({ type: DELETE_INGREDIENT, index });
+            }
+        }
+        dispatch({ type: ADD_INGREDIENT, item: {
+            ...item,
+            uuid: uuidv4()
+        }  });
+    };
     const handleOrder = () => {
         openOrderModal(currentBurger);
     };
 
+    const currentBurgerIngredients = [...currentBurger].filter((item) => item.type !== 'bun');
+
+    const handleMove = useCallback((dragIndex, hoverIndex) => {
+        const bun = [...currentBurger].find((item) => item.type === 'bun');
+        const dragElement = currentBurgerIngredients[dragIndex];
+        const payload = bun
+            ? [bun, ...update(currentBurgerIngredients, {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragElement],
+                ],
+            })]
+            : update(currentBurgerIngredients, {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragElement],
+                ],
+            });
+        dispatch({ type: MOVE_CONSTRUCTOR_ELEMENT, payload });
+    }, [currentBurgerIngredients]);
+
+    const handleDeleteIngredient = (item) => {
+        const index = currentBurger.indexOf(item);
+        dispatch({ type: DELETE_INGREDIENT, index });
+    };
+
+
     const [{ isHover }, dropTarget] = useDrop({
         accept: 'ingredient',
         drop(item) {
-            onDrop(item);
+            handleDrop(item);
         },
         collect: monitor => ({
             isHover: monitor.isOver(),
@@ -39,16 +87,14 @@ const BurgerConstructor = ({ openOrderModal, onDrop, onMove, onDelete }) => {
             .map((element, index) => (
                 <ConstructorElements
                     element={element}
-                    id={element._id}
-                    key={element._id}
+                    key={element.uuid}
                     index={index}
-                    onDelete={onDelete}
-                    onMove={onMove}
-                    selectedBun={selectedBun}
+                    onMove={handleMove}
+                    onDelete={handleDeleteIngredient}
                 />
             )),
         [currentBurger],
-    );    
+    );
 
     return (
         <section className={`${burgerConstructorStyles.section} pt-15 pl-4`}>
@@ -93,10 +139,7 @@ const BurgerConstructor = ({ openOrderModal, onDrop, onMove, onDelete }) => {
 }
 
 BurgerConstructor.propTypes = {
-    openOrderModal: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onMove: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
+    openOrderModal: PropTypes.func.isRequired
 };
 
 export default BurgerConstructor

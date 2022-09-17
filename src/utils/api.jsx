@@ -7,17 +7,18 @@ const checkResponse = (res) => {
       .then(err => Promise.reject(err));
 };
 
-
-export function ingredientsRequest() {
-  return fetch(`${API_URL}ingredients`).then(checkResponse)
+function request(url, options) {
+  return fetch(url, options).then(checkResponse)
 }
 
-export function sendOrder (order) {
-  return fetch(`${API_URL}orders`, {
+export const ingredientsRequest = () => request (`${API_URL}ingredients`)
+
+export const sendOrder = (order) => request (
+  `${API_URL}orders`,
+  {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ingredients: order})
-  })
-  .then(checkResponse)
-  .catch(err => console.log(err)) 
-}
+  }
+)
+
