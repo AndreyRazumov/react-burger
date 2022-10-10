@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { createPortal } from 'react-dom';
-import modalStyles from './modal.module.css';
+import styles from './modal.module.css';
 import ModalOverlay from './modalOverlay/modalOverlay'
 
 const modalRoot = document.getElementById('modals');
@@ -29,9 +29,9 @@ const Modal = ({ children, title, closeModal }) => {
 
   return createPortal(
     <ModalOverlay modalClick={closeModal}>
-      <div className={`${modalStyles.container} p-10`} onClick={stopClickPropagation}>
-        <h1 className={`${modalStyles.text} text text_type_main-large mt-4`} onClick={stopClickPropagation}>{title}</h1>
-        <button className={modalStyles.button} onClick={closeModal}>
+      <div className={`${styles.container} p-10`} onClick={stopClickPropagation}>
+        <h1 className={`${styles.text} text text_type_main-large mt-4`} onClick={stopClickPropagation}>{title}</h1>
+        <button className={styles.button} onClick={closeModal}>
           <CloseIcon type="primary" />
         </button>
         {children}
@@ -42,7 +42,10 @@ const Modal = ({ children, title, closeModal }) => {
 }
 
 Modal.propTypes = {
-  children: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.object.isRequired,
+    PropTypes.array.isRequired,
+  ]),
   title: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
 };

@@ -2,99 +2,121 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import appStyles from './app.module.css';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import styles from './app.module.css';
 import AppHeader from '../appHeader/appHeader'
-import BurgerIngredients from '../burgerIngredients/burgerIngredients'
-import BurgerConstructor from '../burgerConstructor/burgerConstructor'
 import Modal from '../modal/modal'
 import OrderDetails from '../modal/orderDetails/orderDetails'
 import IngredientDetails from '../modal/ingredientDetails/ingredientDetails';
+import ProtectedRoute from '../protectedRoute/protectedRoute';
+import AnonimusRoute from '../anonimusRoute/anonimusRoute';
+import { getCookie } from '../../utils/utils';
+import { useAuth } from '../../utils/hooks/authHook';
+import Preloader from '../preloader/preloader';
+import { getIngredients } from '../../services/actions/actions';
 import {
-  ADD_INGREDIENT_DATA,
-  DELETE_INGREDIENT_DATA,
-  OPEN_INGREDIENT_DETAILS,
-  CLOSE_INGREDIENT_DETAILS,
-  OPEN_ORDER_DETAILS,
-  CLOSE_ORDER_DETAILS,
-  getIngredients,
-  getOrder,
-} from '../../services/actions/actions';
+  HomePage,
+  LoginPage,
+  ProfilePage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  IngredientPage,
+  NotFoundPage,
+} from '../../pages';
 
 function App() {
+  const location = useLocation();
+  const history = useHistory();
   const dispatch = useDispatch();
-  const isIngredientDetailsOpened = useSelector((store) => store.modalReducer.isIngredientDetailsOpened);
-  const isOrderDetailsOpened = useSelector((store) => store.modalReducer.isOrderDetailsOpened);
-  const { ingredientsReducer, orderReducer } = useSelector((store) => store);
-  
 
-  const openOrderDetails = () => {
-    dispatch({ type: OPEN_ORDER_DETAILS });
-  };
-
-  const openDetailsModal = (item) => {
-    dispatch({ type: ADD_INGREDIENT_DATA, item });
-    dispatch({ type: OPEN_INGREDIENT_DETAILS });
-  }
-
-  const closeModals = () => {
-    dispatch({ type: DELETE_INGREDIENT_DATA });
-    dispatch({ type: CLOSE_INGREDIENT_DETAILS });
-    dispatch({ type: CLOSE_ORDER_DETAILS });
-  };
+  const { ingredientsFaied } = useSelector(store => store.ingredientsReducer);
+  const { authRequest, message } = useSelector(store => store.userReducer);
+  const background = location.state && location.state.background;
 
   useEffect(() => {
     dispatch(getIngredients());
   }, [dispatch]);
 
-  const openOrderModal = (orderData) => {
-    dispatch(getOrder(orderData));
-    openOrderDetails();
+  useAuth();
+
+  const onClose = () => {
+    history.goBack();
   };
 
-
-  if (ingredientsReducer.ingredientsRequest || orderReducer.orderRequest) {
+  if (authRequest || (message === '' && getCookie('token'))) {
+    return (<Preloader />);
+  } else {
     return (
-      <Modal closeModal={closeModals} title="">
-        <p className={`text text_type_main-large p-10`}>Загрузка...</p>
-      </Modal>
-    )
-  }
+      <>
+        <div className={`${styles.app} pt-15 pb-10`}>
+          <AppHeader />
+          {
+            ingredientsFaied &&
+            <Modal closeModal={onClose} title="">
+              <p className={`text text_type_main-large p-10`}>
+                Что-то пошло не так... Перезагрузите страницу!
+              </p>
+            </Modal>
+          }
+          <Switch location={background || location}>
 
-  if (ingredientsReducer.ingredientsFaied || orderReducer.orderFaied) {
-    return (
-      <Modal closeModal={closeModals} title="">
-        <p className={`text text_type_main-large p-10`}>
-          Что-то пошло не так... Перезагрузите страницу!
-        </p>
-      </Modal>
-    )
-  }
+            <Route path="/" exact>
+              <DndProvider backend={HTML5Backend}>
+                <HomePage />
+              </DndProvider>
+            </Route>
 
-  return (
-    <div className={`${appStyles.app} pt-15 pb-10`}>
-      <AppHeader />
-      <div className={`${appStyles.twoClumns} pr-5 pl-5 pt-10`}>
-        <DndProvider backend={HTML5Backend}>
-          <BurgerIngredients
-            openDetailsModal={openDetailsModal}
-          />
-          <BurgerConstructor
-            openOrderModal={openOrderModal}
-          />
-        </DndProvider>
-      </div>
-      {isOrderDetailsOpened && (
-        <Modal closeModal={closeModals} title="">
-          <OrderDetails />
-        </Modal>
-      )}
-      {isIngredientDetailsOpened && (
-        <Modal closeModal={closeModals} title="Детали ингредиента">
-          <IngredientDetails />
-        </Modal>
-      )}
-    </div>
-  );
+            <Route path="/ingredients/:id" exact>
+              <IngredientPage />
+            </Route>
+
+            <Route path="/profile/orders/:orderNumber" exact>
+              <OrderDetails />
+            </Route>
+
+            <AnonimusRoute path="/login" exact>
+              <LoginPage />
+            </AnonimusRoute>
+
+            <AnonimusRoute path="/register" exact>
+              <RegisterPage />
+            </AnonimusRoute>
+
+            <AnonimusRoute path="/forgot-password" exact>
+              <ForgotPasswordPage />
+            </AnonimusRoute>
+
+            <AnonimusRoute path="/reset-password" exact>
+              <ResetPasswordPage />
+            </AnonimusRoute>
+
+            <ProtectedRoute path="/profile">
+              <ProfilePage />
+            </ProtectedRoute>
+
+            <Route>
+              <NotFoundPage />
+            </Route>
+
+            <Route path="/ingredients" exact>
+              <IngredientPage />
+            </Route>
+
+          </Switch>
+
+          {background && (
+            <Route path="/ingredients/:id" exact>
+              <Modal closeModal={onClose} title="Детали ингредиента">
+                <IngredientDetails />
+              </Modal>
+            </Route>
+          )}
+
+        </div>
+      </>
+    );
+  }
 }
 
 export default App

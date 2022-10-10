@@ -3,7 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import PropTypes from 'prop-types';
 import { ingredientDataTypes } from '../../../utils/types'
 import { ConstructorElement, DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import constructorElementsStyle from './constructorElements.module.css'
+import style from './constructorElements.module.css'
 
 const ConstructorElements = memo(({ element, index, onDelete, onMove }) => {
     const { name, price, image } = element;
@@ -52,7 +52,7 @@ const ConstructorElements = memo(({ element, index, onDelete, onMove }) => {
 
     return (
         <li
-            className={`${constructorElementsStyle.list} ${isDragging && constructorElementsStyle.isDragging} mr-2 mb-4`}
+            className={`${style.list} ${isDragging && style.isDragging} mr-2 mb-4`}
             ref={ref}
             data-handler-id={handlerId}
             draggable

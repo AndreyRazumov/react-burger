@@ -1,10 +1,10 @@
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import tabElementStyle from './tabElement.module.css'
+import style from './tabElement.module.css'
 
 const TabElement = ({ current, handleTabClick }) => {
 
     return (
-        <nav className={`${tabElementStyle.main}`}>
+        <nav className={`${style.main}`}>
             <Tab value="bun" active={current === 'bun'} onClick={handleTabClick}>
                 Булки
             </Tab>
