@@ -1,12 +1,13 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
 import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import ConstructorElements from './constructorElements/constructorElements'
-import burgerConstructorStyles from './burgerConstructor.module.css';
+import styles from './burgerConstructor.module.css';
 import {
     ADD_INGREDIENT,
     MOVE_CONSTRUCTOR_ELEMENT,
@@ -15,9 +16,11 @@ import {
 
 const BurgerConstructor = ({ openOrderModal }) => {
     const dispatch = useDispatch();
-    const currentBurger = useSelector((store) => store.currentBurgerReducer.currentBurger);
-    const orderRequest = useSelector((store) => store.orderReducer.orderRequest);
-    const selectedBun = currentBurger && currentBurger.find((item) => item.type === 'bun');
+    const history = useHistory();
+    const currentBurger = useSelector(store => store.currentBurgerReducer.currentBurger);
+    const orderRequest = useSelector(store => store.orderReducer.orderRequest);
+    const { isAuth } = useSelector(store => store.userReducer.data);
+    const selectedBun = currentBurger && currentBurger.find(item => item.type === 'bun');
 
     const price = useMemo(() => {
         return (currentBurger.length
@@ -28,25 +31,38 @@ const BurgerConstructor = ({ openOrderModal }) => {
 
     const handleDrop = (item) => {
         if (item.type === 'bun') {
-            const bun = currentBurger.find((element) => element.type === 'bun');
+            const bun = currentBurger.find(element => element.type === 'bun');
             const index = currentBurger.indexOf(bun);
             if (index !== -1) {
                 dispatch({ type: DELETE_INGREDIENT, index });
             }
         }
-        dispatch({ type: ADD_INGREDIENT, item: {
-            ...item,
-            uuid: uuidv4()
-        }  });
+        dispatch({
+            type: ADD_INGREDIENT, item: {
+                ...item,
+                uuid: uuidv4()
+            }
+        });
     };
     const handleOrder = () => {
-        openOrderModal(currentBurger);
+        if (isAuth) {
+            openOrderModal(currentBurger);
+        } else {
+            history.replace({
+                pathname: '/login',
+                state: {
+                    from: {
+                        pathname: '/'
+                    }
+                }
+            });
+        }
     };
 
     const currentBurgerIngredients = [...currentBurger].filter((item) => item.type !== 'bun');
 
     const handleMove = useCallback((dragIndex, hoverIndex) => {
-        const bun = [...currentBurger].find((item) => item.type === 'bun');
+        const bun = [...currentBurger].find(item => item.type === 'bun');
         const dragElement = currentBurgerIngredients[dragIndex];
         const payload = bun
             ? [bun, ...update(currentBurgerIngredients, {
@@ -83,7 +99,7 @@ const BurgerConstructor = ({ openOrderModal }) => {
 
     const constructorElement = useMemo(
         () => currentBurger
-            .filter((item) => item.type !== 'bun')
+            .filter(item => item.type !== 'bun')
             .map((element, index) => (
                 <ConstructorElements
                     element={element}
@@ -97,8 +113,8 @@ const BurgerConstructor = ({ openOrderModal }) => {
     );
 
     return (
-        <section className={`${burgerConstructorStyles.section} pt-15 pl-4`}>
-            <div className={`${burgerConstructorStyles.ingredient}`} style={{ borderColor }} ref={dropTarget}>
+        <section className={`${styles.section} pt-15 pl-4`}>
+            <div className={`${styles.ingredient}`} style={{ borderColor }} ref={dropTarget}>
                 {selectedBun && (
                     <div className={`ml-8`} key="top">
                         <ConstructorElement
@@ -110,7 +126,7 @@ const BurgerConstructor = ({ openOrderModal }) => {
                         />
                     </div>
                 )}
-                <ul className={`${burgerConstructorStyles.items}`} key="middle">
+                <ul className={`${styles.items}`} key="middle">
                     {constructorElement}
                 </ul>
                 {selectedBun && (
@@ -125,8 +141,8 @@ const BurgerConstructor = ({ openOrderModal }) => {
                     </div>
                 )}
             </div>
-            <div className={`${burgerConstructorStyles.submit} pt-10 pr-4`}>
-                <div className={`${burgerConstructorStyles.price} mr-10`}>
+            <div className={`${styles.submit} pt-10 pr-4`}>
+                <div className={`${styles.price} mr-10`}>
                     <p className={`text text_type_digits-medium pr-1`}>{price}</p>
                     <CurrencyIcon type="primary" />
                 </div>

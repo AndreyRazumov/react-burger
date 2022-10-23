@@ -4,6 +4,7 @@
     align-items: center;
     flex-direction: column;
     max-width: 272px;
+    color: #f2f2f3;
     cursor: pointer;
 }
 
@@ -13,4 +14,8 @@
 
 .name {
     text-align: center;
+}
+
+.link {
+    text-decoration: none;
 }

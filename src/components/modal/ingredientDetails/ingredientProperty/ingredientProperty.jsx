@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import ingredientPropertyStyles from './ingredientProperty.module.css';
+import styles from './ingredientProperty.module.css';
 
 const IngredientProperty = ({ property, value }) => {
   return (
-    <li className={ingredientPropertyStyles.item}>
+    <li className={styles.item}>
       <p className='text text_type_main-default mb-2'>{property}</p>
       <p className='text text_type_digits-default'>{value}</p>
     </li>

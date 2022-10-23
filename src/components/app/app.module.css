@@ -1,15 +1,7 @@
-.app {  
+.app {
     background-color: #131316;
     max-width: 1920px;
     width: 100%;
     min-height: 100vh;
     margin: 0 auto;
-}
-
-.twoClumns {
-    max-width: 1280px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    display: flex;
-    column-gap: 40px;
 }

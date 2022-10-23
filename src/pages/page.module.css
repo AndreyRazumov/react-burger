@@ -1,0 +1,45 @@
+.wrapper {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  composes: text text_type_main-medium mb-6 mt-20 from global;
+}
+
+.modal {
+  composes: text text_type_main-medium mb-6 pr-20 from global;
+}
+
+.text {
+  composes: text text_type_main-default text_color_inactive from global;
+}
+
+.text:first-of-type {
+  margin-bottom: 16px;
+}
+
+.link {
+  composes: ml-2 from global;
+  color: #4c4cff;
+  text-decoration: none;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 24px;
+}
+
+.twoClumns {
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  column-gap: 40px;
+}
