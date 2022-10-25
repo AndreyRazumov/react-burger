@@ -1,6 +1,6 @@
 import ProfileForm from '../components/profile/profileForm/profileForm';
-import ProfileMenu from "../components/profile/profileMenu/profileMenu";
-import styles from './profile.module.css'
+import ProfileMenu from '../components/profile/profileMenu/profileMenu';
+import styles from './page.module.css'
 
 const ProfilePage = () => {
   return (

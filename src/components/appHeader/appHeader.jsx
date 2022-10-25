@@ -15,8 +15,8 @@ const AppHeader = () => {
                         </NavLink>
                     </li>
                     <li className='pt-4 pr-5 pb-4 pl-5 ml-2'>
-                        <NavLink exact to="/orders" className={`${styles.link} text text_type_main-default`} activeClassName={styles.linkActive}>
-                            <ListIcon type={location.pathname === '/order' ? 'primary' : 'secondary'} />
+                        <NavLink exact to="/feed" className={`${styles.link} text text_type_main-default`} activeClassName={styles.linkActive}>
+                            <ListIcon type={location.pathname === '/feed' ? 'primary' : 'secondary'} />
                             <span className='ml-2'>Лента Заказов</span>
                         </NavLink>
                     </li>

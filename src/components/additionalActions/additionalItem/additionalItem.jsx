@@ -5,7 +5,7 @@ import styles from './additionalItem.module.css';
 function AdditionalItem({ text, link, linkText }) {
   return (
     <li className='m-4'>
-      <p className={`${styles.item} text text_type_main-small`}>
+      <p className={styles.item}>
         {text} <Link to={link} className={styles.link}>{linkText}</Link>
       </p>
     </li>

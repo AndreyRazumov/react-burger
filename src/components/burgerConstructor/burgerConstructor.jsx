@@ -44,17 +44,13 @@ const BurgerConstructor = ({ openOrderModal }) => {
             }
         });
     };
+
     const handleOrder = () => {
         if (isAuth) {
-            openOrderModal(currentBurger);
+            openOrderModal(currentBurger)
         } else {
             history.replace({
-                pathname: '/login',
-                state: {
-                    from: {
-                        pathname: '/'
-                    }
-                }
+                pathname: '/login'
             });
         }
     };
@@ -146,11 +142,11 @@ const BurgerConstructor = ({ openOrderModal }) => {
                     <p className={`text text_type_digits-medium pr-1`}>{price}</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large" onClick={handleOrder} disabled={!currentBurger.length || orderRequest || !selectedBun}>
+                < Button type="primary" size="large" onClick={handleOrder} disabled={!currentBurger.length || orderRequest || !selectedBun}>
                     Оформить заказ
                 </Button>
             </div>
-        </section>
+        </section >
     );
 }
 

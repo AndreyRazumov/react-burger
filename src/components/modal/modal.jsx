@@ -29,8 +29,8 @@ const Modal = ({ children, title, closeModal }) => {
 
   return createPortal(
     <ModalOverlay modalClick={closeModal}>
-      <div className={`${styles.container} p-10`} onClick={stopClickPropagation}>
-        <h1 className={`${styles.text} text text_type_main-large mt-4`} onClick={stopClickPropagation}>{title}</h1>
+      <div className={styles.container} onClick={stopClickPropagation}>
+        <h1 className={styles.text} onClick={stopClickPropagation}>{title}</h1>
         <button className={styles.button} onClick={closeModal}>
           <CloseIcon type="primary" />
         </button>

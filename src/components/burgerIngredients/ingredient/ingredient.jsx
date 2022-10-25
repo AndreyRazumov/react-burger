@@ -27,7 +27,7 @@ const Ingredient = ({ element, openDetailsModal }) => {
 
   return (
     <Link
-      className={`${style.link}`}
+      className={style.link}
       key={ingredientId}
       to={{
         pathname: `/ingredients/${ingredientId}`,
@@ -38,9 +38,9 @@ const Ingredient = ({ element, openDetailsModal }) => {
         {0 < count &&
           <Counter count={count} size="default" />
         }
-        <img src={image} alt={name} className={`ml-4 mr-4`} />
+        <img src={image} alt={name} className='ml-4 mr-4' />
         <div className={`${style.price} mt-2 mb-2`}>
-          <p className={`mr-2 text text_type_digits-default`}>{price}</p>
+          <p className='mr-2 text text_type_digits-default'>{price}</p>
           <CurrencyIcon type="primary" />
         </div>
         <p className={`${style.name} text text_type_main-default`}>{name}</p>

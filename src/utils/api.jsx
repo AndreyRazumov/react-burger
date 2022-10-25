@@ -14,7 +14,6 @@ function request(url, options) {
     .then(checkResponse)
 }
 
-
 export const ingredientsRequest = () => request(
   `${API_URL}ingredients`
 )
@@ -23,7 +22,10 @@ export const sendOrder = (order) => request(
   `${API_URL}orders`,
   {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: 'Bearer ' + getCookie('token')
+    },
     body: JSON.stringify({ ingredients: order })
   }
 )
