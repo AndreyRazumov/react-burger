@@ -23,7 +23,7 @@ const ProfileOrders = () => {
               created={order.createdAt}
               status={order.status}
             />
-        )
+        ).reverse()
       }
       {
         !isConnected && <Preloader />
