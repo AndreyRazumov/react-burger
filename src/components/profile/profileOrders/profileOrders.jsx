@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import { getOrders, getWsFeedConnected } from '../../../services/selectors';
 import OrderCard from '../../orderCard/orderCard';
 import styles from './profileOrders.module.css';
@@ -15,7 +14,7 @@ const ProfileOrders = () => {
         !!orders && orders.map(
           order =>
             <OrderCard
-              key={uuidv4()}
+              key={order._id}
               id={order._id}
               ingredientIdList={order.ingredients}
               name={order.name}

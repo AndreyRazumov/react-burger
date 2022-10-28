@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -6,7 +5,6 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import styles from './app.module.css';
 import AppHeader from '../appHeader/appHeader'
 import Modal from '../modal/modal'
-import OrderDetails from '../modal/orderDetails/orderDetails'
 import IngredientDetails from '../modal/ingredientDetails/ingredientDetails';
 import ProtectedRoute from '../protectedRoute/protectedRoute';
 import AnonimusRoute from '../anonimusRoute/anonimusRoute';
@@ -14,7 +12,6 @@ import { getCookie } from '../../utils/utils';
 import { useAuth } from '../../utils/hooks/authHook';
 import { useGetIngredients } from '../../utils/hooks/getIngredientsHook';
 import Preloader from '../preloader/preloader';
-import { getIngredients } from '../../services/actions/actions';
 import FeedOrderDetails from '../feedContent/feedOrderDetails/feedOrderDetails';
 import { getOrders } from '../../services/selectors';
 import { RequestStatus } from '../../utils/const';
@@ -43,11 +40,6 @@ function App() {
   const { authRequest, message } = useSelector(store => store.userReducer);
   const background = location.state && location.state.background;
   const ingredientsRequestStatus = useGetIngredients();
-
-  useEffect(() => {
-    dispatch(getIngredients());
-  }, [dispatch]);
-
 
   const closeErrorPopup = () => {
     if (ingredientsRequestStatus === RequestStatus.failed) {

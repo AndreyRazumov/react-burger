@@ -2,32 +2,39 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { v4 as uuidv4 } from 'uuid';
 import { intersection, formatDate } from '../../utils/utils';
-import { getIngredients } from '../../services/selectors';
+import { getOrders, getIngredients } from '../../services/selectors';
 import IngredientImage from '../ingredientImage/ingredientImage';
 import styles from './orderCard.module.css';
 import { OrderStatus } from '../../utils/const';
 
-const MAX_SHOWED_INGREDIENTS = 5;
+const MAX_SHOWED_INGREDIENTS = 6;
 
 const OrderCard = ({ id, ingredientIdList, name, number, created, status = undefined }) => {
   const location = useLocation();
   const { url } = useRouteMatch();
-
+  const orders = useSelector(getOrders);
+  const order = orders.find(it => it._id === id);
   const ingredientsList = useSelector(getIngredients);
   const { bun, ingredientsArr } = intersection(ingredientIdList, ingredientsList);
-  const date = formatDate(created);
-
-  const showedIngredientsList = ingredientsArr.length <= MAX_SHOWED_INGREDIENTS
-    ? [...ingredientsArr]
-    : ingredientsArr.slice(0, MAX_SHOWED_INGREDIENTS);
-
   const bunPrice = bun.price ? bun.price * 2 : 0;
   const price = ingredientsArr.reduce((prevValue, item) => prevValue += item.price, bunPrice);
+  const date = formatDate(created);
+  const ingrArr = []
 
-  const unshowedIngredientsCount = ingredientsArr.length - MAX_SHOWED_INGREDIENTS > 0
-    ? ingredientsArr.length - MAX_SHOWED_INGREDIENTS
+  ingredientsList.map(el => {
+    const data = order.ingredients.find(item => el._id === item);
+    if (data) {
+      ingrArr.push(el);
+    }
+  }, 0);
+
+  const showedIngredientsList = ingrArr.length <= MAX_SHOWED_INGREDIENTS
+    ? [...ingrArr]
+    : ingrArr.slice(0, MAX_SHOWED_INGREDIENTS);
+
+  const unshowedIngredientsCount = ingrArr.length - MAX_SHOWED_INGREDIENTS > 0
+    ? ingrArr.length - MAX_SHOWED_INGREDIENTS
     : 0;
 
   return (
@@ -45,28 +52,13 @@ const OrderCard = ({ id, ingredientIdList, name, number, created, status = undef
         {status && <p className='text text_type_main-default mt-2'>{OrderStatus[status]}</p>}
         <ul className={`${styles.ingredients_list} mt-6`}>
           {
-            bun._id && <li
-              className={styles.ingredients_item}
-              style={{
-                zIndex: ingredientsArr.length + 2,
-              }}
-            >
-              <IngredientImage
-                ingredientUrl={bun.image_mobile}
-                ingredientName={bun.name}
-                unshowedIngredientsCount={unshowedIngredientsCount}
-                isCountShow={false}
-              />
-            </li>
-          }
-          {
             !!showedIngredientsList.length && showedIngredientsList.map((ingredient, index) =>
             (
               <li
-                key={uuidv4()}
+                key={ingredient._id}
                 className={styles.ingredients_item}
                 style={{
-                  zIndex: ingredientsArr.length + 1 - index,
+                  zIndex: ingrArr.length + 1 - index,
                 }}
               >
                 <IngredientImage

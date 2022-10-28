@@ -6,7 +6,6 @@ import { formatDate, intersection } from '../../../utils/utils';
 import styles from './feedOrderDetails.module.css';
 import { OrderStatus } from '../../../utils/const';
 import IngredientImage from '../../ingredientImage/ingredientImage';
-import { v4 as uuidv4 } from 'uuid';
 
 const FeedOrderDetails = () => {
   const { id } = useParams();
@@ -17,6 +16,26 @@ const FeedOrderDetails = () => {
   const bunPrice = bun.price ? bun.price * 2 : 0;
   const price = ingredientsArr.reduce((prevValue, item) => prevValue += item.price, bunPrice);
   const date = formatDate(order.createdAt);
+  
+  const ingrArr = []
+
+  const merge = order.ingredients.reduce(function (acc, el) {
+    acc[el] = (acc[el] || 0) + 1;
+    return acc;
+  }, []);
+
+  ingredientsList.map(el => {
+    const data = order.ingredients.find(item => el._id === item);
+    if (data) {
+      ingrArr.push(el);
+    }
+  }, 0);
+
+  let cost = 0;
+  ingrArr.forEach(item => {
+    cost += merge[item._id] * item.price;
+  });
+
   return (
     <div>
       <header>
@@ -27,18 +46,14 @@ const FeedOrderDetails = () => {
       <p className='text text_type_main-medium mt-15'>Состав:</p>
       <ul className={`${styles.list} mt-6`}>
         {
-          bun._id && <li className={styles.item}>
-            <IngredientImage ingredientUrl={bun.image_mobile} ingredientName={bun.name} />
-            <p className='text text_type_main-default'>{bun.name}</p>
-            <p className={styles.price}>2 x {bun.price}&nbsp;<CurrencyIcon /></p>
-          </li>
-        }
-        {
-          ingredientsArr.length && ingredientsArr.map(ingredient =>
-            <li className={styles.item} key={uuidv4()}>
+          ingrArr.length &&
+          ingrArr.map(ingredient =>
+            <li className={styles.item} 
+            key={ingredient._id}
+            >
               <IngredientImage ingredientUrl={ingredient.image_mobile} ingredientName={ingredient.name} />
               <p className='text text_type_main-default'>{ingredient.name}</p>
-              <p className={styles.price}>1 x {ingredient.price}&nbsp;<CurrencyIcon /></p>
+              <p className={styles.price}>{merge[ingredient._id]}&nbsp;x&nbsp;{ingredient.price}&nbsp;<CurrencyIcon /></p>
             </li>
           )
         }
