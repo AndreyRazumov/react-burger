@@ -1,0 +1,57 @@
+.status {
+  composes: text text_type_main-default mt-3 from global;
+  color: #00cccc;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  padding-right: 24px;
+  list-style: none;
+  max-height: 366px;
+  overflow-y: auto;
+}
+
+.list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background-color: #8585ad;
+}
+
+.list::-webkit-scrollbar-track {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #2f2f37;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: min-content 1fr max-content;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.item:last-child {
+  margin-bottom: 0;
+}
+
+.price {
+  composes: text text_type_digits-default from global;
+  display: flex;
+  align-items: center;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.time {
+  composes: text text_type_main-default from global;
+  color: #8585ad;
+}

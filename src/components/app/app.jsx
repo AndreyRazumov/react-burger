@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -6,14 +5,17 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import styles from './app.module.css';
 import AppHeader from '../appHeader/appHeader'
 import Modal from '../modal/modal'
-import OrderDetails from '../modal/orderDetails/orderDetails'
 import IngredientDetails from '../modal/ingredientDetails/ingredientDetails';
 import ProtectedRoute from '../protectedRoute/protectedRoute';
 import AnonimusRoute from '../anonimusRoute/anonimusRoute';
 import { getCookie } from '../../utils/utils';
 import { useAuth } from '../../utils/hooks/authHook';
+import { useGetIngredients } from '../../utils/hooks/getIngredientsHook';
 import Preloader from '../preloader/preloader';
-import { getIngredients } from '../../services/actions/actions';
+import FeedOrderDetails from '../feedContent/feedOrderDetails/feedOrderDetails';
+import { getOrders } from '../../services/selectors';
+import { RequestStatus } from '../../utils/const';
+import { RESET_INGREDIENTS_FAILED } from '../../services/actions/actions';
 import {
   HomePage,
   LoginPage,
@@ -23,95 +25,143 @@ import {
   ResetPasswordPage,
   IngredientPage,
   NotFoundPage,
+  FeedPage,
+  FeedOrderDetailsPage,
+  ProfileOrdersPage,
+  ProfileOrderDetailsPage,
 } from '../../pages';
 
 function App() {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  useAuth();
 
-  const { ingredientsFaied } = useSelector(store => store.ingredientsReducer);
   const { authRequest, message } = useSelector(store => store.userReducer);
   const background = location.state && location.state.background;
+  const ingredientsRequestStatus = useGetIngredients();
 
-  useEffect(() => {
-    dispatch(getIngredients());
-  }, [dispatch]);
-
-  useAuth();
+  const closeErrorPopup = () => {
+    if (ingredientsRequestStatus === RequestStatus.failed) {
+      dispatch({ type: RESET_INGREDIENTS_FAILED });
+    }
+  };
 
   const onClose = () => {
     history.goBack();
   };
+
+  const orders = useSelector(getOrders);
 
   if (authRequest || (message === '' && getCookie('token'))) {
     return (<Preloader />);
   } else {
     return (
       <>
-        <div className={`${styles.app} pt-15 pb-10`}>
+        <div className={styles.app}>
           <AppHeader />
           {
-            ingredientsFaied &&
-            <Modal closeModal={onClose} title="">
-              <p className={`text text_type_main-large p-10`}>
+            ingredientsRequestStatus === RequestStatus.failed &&
+            <Modal closeModal={closeErrorPopup} title="">
+              <p className={styles.text}>
                 Что-то пошло не так... Перезагрузите страницу!
               </p>
             </Modal>
           }
-          <Switch location={background || location}>
+          {
+            ingredientsRequestStatus !== RequestStatus.failed &&
+            (
+              <Switch location={background || location}>
 
-            <Route path="/" exact>
-              <DndProvider backend={HTML5Backend}>
-                <HomePage />
-              </DndProvider>
-            </Route>
+                <Route path="/" exact>
+                  <DndProvider backend={HTML5Backend}>
+                    <HomePage />
+                  </DndProvider>
+                </Route>
 
-            <Route path="/ingredients/:id" exact>
-              <IngredientPage />
-            </Route>
+                <Route path="/feed" exact>
+                  <FeedPage />
+                </Route>
 
-            <Route path="/profile/orders/:orderNumber" exact>
-              <OrderDetails />
-            </Route>
+                <Route path="/feed/:id" exact>
+                  <FeedOrderDetailsPage />
+                </Route>
 
-            <AnonimusRoute path="/login" exact>
-              <LoginPage />
-            </AnonimusRoute>
+                <Route path="/ingredients/:id" exact>
+                  <IngredientPage />
+                </Route>
 
-            <AnonimusRoute path="/register" exact>
-              <RegisterPage />
-            </AnonimusRoute>
+                <AnonimusRoute path="/login" exact>
+                  <LoginPage />
+                </AnonimusRoute>
 
-            <AnonimusRoute path="/forgot-password" exact>
-              <ForgotPasswordPage />
-            </AnonimusRoute>
+                <AnonimusRoute path="/register" exact>
+                  <RegisterPage />
+                </AnonimusRoute>
 
-            <AnonimusRoute path="/reset-password" exact>
-              <ResetPasswordPage />
-            </AnonimusRoute>
+                <AnonimusRoute path="/forgot-password" exact>
+                  <ForgotPasswordPage />
+                </AnonimusRoute>
 
-            <ProtectedRoute path="/profile">
-              <ProfilePage />
-            </ProtectedRoute>
+                <AnonimusRoute path="/reset-password" exact>
+                  <ResetPasswordPage />
+                </AnonimusRoute>
 
-            <Route>
-              <NotFoundPage />
-            </Route>
+                <ProtectedRoute path="/profile/orders/:id" exact>
+                  <ProfileOrderDetailsPage />
+                </ProtectedRoute>
 
-            <Route path="/ingredients" exact>
-              <IngredientPage />
-            </Route>
+                <ProtectedRoute path="/profile/orders" exact>
+                  <ProfileOrdersPage />
+                </ProtectedRoute>
 
-          </Switch>
+                <ProtectedRoute path="/profile">
+                  <ProfilePage />
+                </ProtectedRoute>
 
-          {background && (
-            <Route path="/ingredients/:id" exact>
-              <Modal closeModal={onClose} title="Детали ингредиента">
-                <IngredientDetails />
-              </Modal>
-            </Route>
-          )}
+                <Route>
+                  <NotFoundPage />
+                </Route>
+
+                <Route path="/ingredients" exact>
+                  <IngredientPage />
+                </Route>
+
+              </Switch>
+            )}
+
+          {
+            background && (
+              <Route path="/ingredients/:id" exact>
+                <Modal closeModal={onClose} title="Детали ингредиента">
+                  <IngredientDetails />
+                </Modal>
+              </Route>
+            )}
+
+          {
+            background && orders.length && (
+              <Route path="/feed/:id" exact>
+                <Modal
+                  title=''
+                  closeModal={onClose}
+                >
+                  <FeedOrderDetails />
+                </Modal>
+              </Route>
+            )}
+
+          {
+            background && orders.length && (
+              <Route path="/profile/orders/:id" exact>
+                <Modal
+                  title=''
+                  closeModal={onClose}
+                >
+                  <FeedOrderDetails />
+                </Modal>
+              </Route>
+            )}
 
         </div>
       </>

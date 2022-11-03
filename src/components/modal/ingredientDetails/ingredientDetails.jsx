@@ -11,9 +11,9 @@ const IngredientDetails = () => {
   if (ingredients.length !== 0) {
     return (
       <div className={styles.container}>
-        <img src={ingredient.image_large} className={`${styles.image}`} alt={ingredient.name} />
-        <p className={`${styles.name} text text_type_main-medium mt-7 mb-4`}>{ingredient.name}</p>
-        <ul className={`${styles.list}`}>
+        <img src={ingredient.image_large} className={styles.image} alt={ingredient.name} />
+        <p className={styles.name}>{ingredient.name}</p>
+        <ul className={styles.list}>
           <IngredientProperty property={'Калории, ккал'} value={ingredient.calories} />
           <IngredientProperty property={'Белки, г'} value={ingredient.proteins} />
           <IngredientProperty property={'Жиры, г'} value={ingredient.fat} />

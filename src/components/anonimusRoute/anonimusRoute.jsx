@@ -7,16 +7,15 @@ function AnonimusRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
-      render={() =>
-        !isAuth ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/',
-            }}
-          />
-        )
+      render={() => !isAuth ? (
+        children
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/',
+          }}
+        />
+      )
       }
     />
   );

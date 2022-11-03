@@ -2,24 +2,27 @@ import {
     GET_INGREDIENTS_REQUEST,
     GET_INGREDIENTS_SUCCESS,
     GET_INGREDIENTS_FAILED,
+    RESET_INGREDIENTS_FAILED,
     POST_ORDER_SUCCESS,
     POST_ORDER_REQUEST,
     POST_ORDER_FAILED,
+    DELETE_ORDER_DATA,
     ADD_INGREDIENT,
     DELETE_INGREDIENT,
     ADD_INGREDIENT_DATA,
     DELETE_INGREDIENT_DATA,
+    CLEAR_CURRENT_BURGER,
     MOVE_CONSTRUCTOR_ELEMENT,
     OPEN_INGREDIENT_DETAILS,
     CLOSE_INGREDIENT_DETAILS,
     OPEN_ORDER_DETAILS,
-    CLOSE_ORDER_DETAILS
+    CLOSE_ORDER_DETAILS,
 } from '../actions/actions';
+import { RequestStatus } from '../../utils/const';
 
 const initialIngredientsState = {
     ingredients: [],
-    ingredientsRequest: false,
-    ingredientsFaied: false,
+    ingredientsRequest: RequestStatus.idle
 };
 
 const initialBurgerState = {
@@ -36,6 +39,7 @@ const initialOrderState = {
     },
     orderRequest: false,
     orderFaied: false,
+    orderIngredientsIdRequest: RequestStatus.idle
 };
 
 const initialModalState = {
@@ -48,24 +52,28 @@ export const ingredientsReducer = (state = initialIngredientsState, action = {})
         case GET_INGREDIENTS_REQUEST: {
             return {
                 ...state,
-                ingredientsRequest: true,
+                ingredientsRequest: RequestStatus.pending,
             };
         }
         case GET_INGREDIENTS_SUCCESS: {
             return {
                 ...state,
                 ingredients: action.items,
-                ingredientsRequest: false,
-                ingredientsFaied: false,
+                ingredientsRequest: RequestStatus.success
             };
         }
         case GET_INGREDIENTS_FAILED: {
             return {
                 ...state,
                 ingredients: [],
-                ingredientsRequest: false,
-                ingredientsFaied: true,
+                ingredientsRequest: RequestStatus.failed
             };
+        }
+        case RESET_INGREDIENTS_FAILED: {
+            return {
+                ...state,
+                ingredientsRequest: RequestStatus.idle,
+            }
         }
         default: {
             return state;
@@ -91,6 +99,12 @@ export const currentBurgerReducer = (state = initialBurgerState, action = {}) =>
             return ({
                 ...state,
                 currentBurger: action.payload,
+            });
+        }
+        case CLEAR_CURRENT_BURGER: {
+            return ({
+                ...state,
+                currentBurger: [],
             });
         }
         default: {
@@ -125,6 +139,7 @@ export const orderReducer = (state = initialOrderState, action) => {
             return {
                 ...state,
                 orderRequest: true,
+                orderIngredientsIdRequest: RequestStatus.pending,
             };
         }
         case POST_ORDER_SUCCESS: {
@@ -133,6 +148,7 @@ export const orderReducer = (state = initialOrderState, action) => {
                 order: action.order,
                 orderRequest: false,
                 orderFaied: false,
+                orderIngredientsIdRequest: RequestStatus.success,
             };
         }
         case POST_ORDER_FAILED: {
@@ -140,6 +156,15 @@ export const orderReducer = (state = initialOrderState, action) => {
                 ...state,
                 orderRequest: false,
                 orderFaied: true,
+                orderIngredientsIdRequest: RequestStatus.failed,
+            };
+        }
+        case DELETE_ORDER_DATA: {
+            return {
+                ...state,
+                order: {
+                    number: 0,
+                },
             };
         }
         default: {

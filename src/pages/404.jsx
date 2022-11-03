@@ -1,10 +1,9 @@
-import React from 'react';
-import styles from './404.module.css';
+import styles from './page.module.css';
 
 export default function NotFoundPage() {
   return (
     <div className={styles.wrapper}>
-      <p className={styles.title}>404</p>
+      <h1 className={styles.heading}>404</h1>
       <p className={styles.text}>Такой страницы не существует</p>
     </div>
   );
