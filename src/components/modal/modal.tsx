@@ -1,4 +1,4 @@
-import { useEffect, FC, ReactNode } from 'react';
+import { useEffect, FC, ReactNode, MouseEvent } from 'react';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { createPortal } from 'react-dom';
 import styles from './modal.module.css';
@@ -28,7 +28,7 @@ const Modal: FC<IModal> = ({ children, title, closeModal }) => {
 
 
 
-  const stopClickPropagation = (evt: any) => {
+  const stopClickPropagation = (evt: MouseEvent) => {
     evt.stopPropagation();
   }
 

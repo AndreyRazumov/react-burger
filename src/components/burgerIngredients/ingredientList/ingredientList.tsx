@@ -1,4 +1,4 @@
-import { forwardRef, FC } from 'react';
+import { FC, ForwardedRef } from 'react';
 import styles from './ingredientList.module.css'
 import Ingredient from '../ingredient/ingredient'
 import { IIngredient } from "../../../utils/types";
@@ -10,7 +10,7 @@ interface IListIngredients {
         TYPE: string;
     };
     idTag: string;
-    categoryRef: any;
+    categoryRef: ForwardedRef<HTMLUListElement>;
 }
 
 const ListIngredients: FC<IListIngredients> = ({ idTag, itemList, itemType, categoryRef }) => {

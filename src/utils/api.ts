@@ -20,7 +20,7 @@ const checkResponse = <T>(res: Response): Promise<T> => {
       .then(err => Promise.reject(err));
 };
 
-async function fetchWithRefresh<T>(url: string, options: any): Promise<T> {
+async function fetchWithRefresh<T>(url: string, options: RequestInit): Promise<T> {
   try {
     const res = await fetch(url, options);
 
@@ -36,7 +36,10 @@ async function fetchWithRefresh<T>(url: string, options: any): Promise<T> {
       localStorage.setItem("refreshToken", refreshData.refreshToken);
       setCookie("token", accessToken);
 
-      options.headers.authorization = refreshData.accessToken;
+      const requestHeaders: HeadersInit = new Headers();
+      requestHeaders.set('authorization', refreshData.accessToken);
+      options.headers = requestHeaders;
+
       const res = await fetch(url, {
         ...options,
         headers: {

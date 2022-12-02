@@ -1,22 +1,23 @@
 import { IIngredient } from "./types/types";
 
-export function setCookie(name: string, value: string, props?: any) {
-  props = props || {};
-  let exp = props.expires;
-  if (typeof exp == 'number' && exp) {
-    const d = new Date();
-    d.setTime(d.getTime() + exp * 1000);
-    exp = props.expires = d;
-  }
-  if (exp && exp.toUTCString) {
-    props.expires = exp.toUTCString();
-  }
+type TCookieProps = {
+  expires: number
+  expiresStr: string
+  otherCookie: { [key: string]: string }
+}
+
+export function setCookie(name: string, value: string, props?: TCookieProps) {
+  props = props || { expires: 60, expiresStr: '', otherCookie: {} };
+  const d = new Date();
+  d.setTime(d.getTime() + props.expires * 1000);
+  props.expiresStr = d.toUTCString();
+
   value = encodeURIComponent(value);
   let updatedCookie = name + '=' + value + ';path=/';
-  for (const propName in props) {
+  for (const propName in props.otherCookie) {
     updatedCookie += '; ' + propName;
-    const propValue = props[propName];
-    if (propValue !== true) {
+    const propValue = props.otherCookie[propName];
+    if (propValue) {
       updatedCookie += '=' + propValue;
     }
   }

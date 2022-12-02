@@ -23,9 +23,10 @@ const FeedOrderDetails = () => {
 
   const ingrArr: IIngredient[] = []
 
-  const merge = order?.ingredients.reduce((acc: any, el: any) => {
-    acc[el] = (acc[el] || 0) + 1;
-    return acc;
+  const merge: { [key: string]: number } = {}
+
+  order?.ingredients.map(el => {
+    merge[el] = (merge[el] || 0) + 1;
   }, []);
 
   ingredientsList.map(el => {
